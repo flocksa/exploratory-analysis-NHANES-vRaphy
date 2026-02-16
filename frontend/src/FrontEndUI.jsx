@@ -51,7 +51,7 @@ function NHANESUI() {
     // if using github codespace, replace PASTE_CODESPACE_NAME_HERE with the codespace name retrieved using get_codespace_name.sh!!
     // if you're running these locally, replace cs_backend in fetch() with:
     // 'http://localhost:5050/profile'
-    const CODESPACE_NAME_HERE = `please_paste_codespace_name_here`;
+    const CODESPACE_NAME_HERE = `probable-space-chainsaw-69p47w465w6r35rxq`;
     const cs_backend = `https://${CODESPACE_NAME_HERE}-5050.app.github.dev/profile`
 
     try {

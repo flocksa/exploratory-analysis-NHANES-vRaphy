@@ -7,10 +7,18 @@ def download_nhanes_file(cycle, file_desc, category, download_dir="nhanes_data")
 
     category = category.lower()
 
+    # maps a 2-year cycle to the first year of the cycle.
     cycle_mapping = {
-        "1999-2000": "1999", "2001-2002": "2001", "2003-2004": "2003",
-        "2005-2006": "2005", "2007-2008": "2007", "2009-2010": "2009",
-        "2011-2012": "2011", "2013-2014": "2013", "2015-2016": "2015", "2017-2018": "2017"
+        "1999-2000": "1999",   #first part is what you actually see and want in your frontend, second part is what's the name of the file 
+        "2001-2002": "2001", 
+        "2003-2004": "2003",
+        "2005-2006": "2005", 
+        "2007-2008": "2007", 
+        "2009-2010": "2009",
+        "2011-2012": "2011", 
+        "2013-2014": "2013", 
+        "2015-2016": "2015", 
+        "2017-2018": "2017"
     }
     cycle_single_year = cycle_mapping.get(cycle, None)
     if not cycle_single_year:
@@ -30,6 +38,13 @@ def download_nhanes_file(cycle, file_desc, category, download_dir="nhanes_data")
                 "1999": "DIQ", "2001": "DIQ_B", "2003": "DIQ_C", "2005": "DIQ_D",
                 "2007": "DIQ_E", "2009": "DIQ_F", "2011": "DIQ_G", "2013": "DIQ_H",
                 "2015": "DIQ_I", "2017": "DIQ_J"
+            }#,
+            #"Hypertension": { <-- if I want to add diseases then make a new library
+            
+        },
+        "laboratory":{
+            "Cholesterol - HDL":{
+                "2013: HDL_H"
             }
         }
     }
