@@ -18,7 +18,9 @@ def download_nhanes_file(cycle, file_desc, category, download_dir="nhanes_data")
         "2011-2012": "2011", 
         "2013-2014": "2013", 
         "2015-2016": "2015", 
-        "2017-2018": "2017"
+        #"2017-2018": "2017",            removed this because 2017-2020 includes this
+        "2017-2020": "2017",
+        "2021-2023": "2021"
     }
     cycle_single_year = cycle_mapping.get(cycle, None)
     if not cycle_single_year:
@@ -28,25 +30,49 @@ def download_nhanes_file(cycle, file_desc, category, download_dir="nhanes_data")
     nhanes_file_mapping = {
         "demographics": {
             "Demographic Variables & Sample Weights": {
-                "1999": "DEMO", "2001": "DEMO_B", "2003": "DEMO_C", "2005": "DEMO_D",
-                "2007": "DEMO_E", "2009": "DEMO_F", "2011": "DEMO_G", "2013": "DEMO_H",
-                "2015": "DEMO_I", "2017": "DEMO_J"
+                "1999": "DEMO", 
+                "2001": "DEMO_B", 
+                "2003": "DEMO_C", 
+                "2005": "DEMO_D",
+                "2007": "DEMO_E", 
+                "2009": "DEMO_F", 
+                "2011": "DEMO_G", 
+                "2013": "DEMO_H",
+                "2015": "DEMO_I", 
+                "2017": "P_DEMO", #for some reason they changed the naming convention be very careful!
+                "2021": "DEMO_L"
             }
         },
         "questionnaire": {
             "Diabetes": {
-                "1999": "DIQ", "2001": "DIQ_B", "2003": "DIQ_C", "2005": "DIQ_D",
-                "2007": "DIQ_E", "2009": "DIQ_F", "2011": "DIQ_G", "2013": "DIQ_H",
-                "2015": "DIQ_I", "2017": "DIQ_J"
-            }#,
-            #"Hypertension": { <-- if I want to add diseases then make a new library
-            
-        },
-        "laboratory":{
-            "Cholesterol - HDL":{
-                "2013: HDL_H"
+                "1999": "DIQ", 
+                "2001": "DIQ_B", 
+                "2003": "DIQ_C", 
+                "2005": "DIQ_D",
+                "2007": "DIQ_E", 
+                "2009": "DIQ_F", 
+                "2011": "DIQ_G", 
+                "2013": "DIQ_H",
+                "2015": "DIQ_I", 
+                "2017": "P_DIQ", # =w= we just randomly skip letters and it's backwards
+                "2021": "DIQ_L"
             }
-        }
+        },
+        # "laboratory":{
+        #     "Cholesterol - Total":{
+        #         "1999": "LAB13", 
+        #         "2001": "L13_B", 
+        #         "2003": "L13_C", 
+        #         "2005": "TCHOL_D",
+        #         "2007": "TCHOL_E", 
+        #         "2009": "TCHOL_F", 
+        #         "2011": "TCHOL_G", 
+        #         "2013": "TCHOL_H",
+        #         "2015": "TCHOL_I", 
+        #         "2017": "P_TCHOL", 
+        #         "2021": "TCHOL_L"
+        #     }
+        # }
     }
 
     file_name = nhanes_file_mapping.get(category, {}).get(file_desc, {}).get(cycle_single_year, None)

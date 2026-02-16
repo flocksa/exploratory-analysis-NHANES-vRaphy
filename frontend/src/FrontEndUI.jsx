@@ -11,11 +11,13 @@ function NHANESUI() {
   const [nhanesCycles, setNhanesCycles] = useState([]);
   const [disease, setDisease] = useState('');
   const [graphData, setGraphData] = useState(null);
+  //const [dietary, setDietary] = useState('');
+
 
   const nhanesCycleOptions = [
     '1999-2000', '2001-2002', '2003-2004', '2005-2006',
     '2007-2008', '2009-2010', '2011-2012', '2013-2014',
-    '2015-2016', '2017-2018'
+    '2015-2016', '2017-2020', '2021-2023'
   ];
 
   const ageRangeOptions = [
@@ -211,6 +213,8 @@ function NHANESUI() {
             <option value="Waist Circumference">Waist Circumference</option>
           </select>
         </div>
+        
+
 
         <div style={{ marginBottom: '15px' }}>
           <label>NHANES Cycles</label>
