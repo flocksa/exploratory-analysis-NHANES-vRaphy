@@ -11,8 +11,7 @@ function NHANESUI() {
   const [nhanesCycles, setNhanesCycles] = useState([]);
   const [disease, setDisease] = useState('');
   const [graphData, setGraphData] = useState(null);
-  //const [dietary, setDietary] = useState('');
-
+  const [majorCategoryAttributes, setMajorCategoryAttributes] = useState([]);
 
   const nhanesCycleOptions = [
     '1999-2000', '2001-2002', '2003-2004', '2005-2006',
@@ -25,6 +24,22 @@ function NHANESUI() {
     '50-59', '60-69', '70-79', '80+'
   ];
 
+  // Major Category Attributes Options
+  const majorCategoryOptions = [
+    { value: "Laboratory Measurements (Sugar, Enzymes, Cholesterol)", label: "Laboratory Measurements (Sugar, Enzymes, Cholesterol)" },
+    { value: "Laboratory Measurements (Blood Composition)", label: "Laboratory Measurements (Blood Composition)" },
+    { value: "Laboratory Measurements (Minerals)", label: "Laboratory Measurements (Minerals)" },
+    { value: "Laboratory Measurements (Albumin and Creatinine)", label: "Laboratory Measurements (Albumin and Creatinine)" },
+    { value: "Examination Data (Body Measurements)", label: "Examination Data (Body Measurements)" },
+    { value: "Examination Data (Blood Pressure)", label: "Examination Data (Blood Pressure)" },
+    { value: "Dietary (General)", label: "Dietary (General)" },
+    { value: "Dietary (Diet)", label: "Dietary (Diet)" },
+    { value: "Dietary (Vitamins and Minerals)", label: "Dietary (Vitamins and Minerals)" },
+  ];
+
+  // Select All option
+  const selectAllOption = { value: "*", label: "Select All" };
+
   const handleRunAnalysis = async () => {
     if (!nhanesCycles.length) {
       alert('Please select at least one NHANES cycle.');
@@ -35,6 +50,7 @@ function NHANESUI() {
       ...(gender && { gender: [gender] }),
       ...(raceEthnicity && { race: [raceEthnicity] }),
       ...(ageRange && { age: ageRange }),
+      ...(majorCategoryAttributes.length && { majorCategoryAttributes: majorCategoryAttributes.map(opt => opt.value) }),
     };
 
     const payload = {
@@ -49,12 +65,9 @@ function NHANESUI() {
       },
       cycles: nhanesCycles,
     };
-    
-    // if using github codespace, replace PASTE_CODESPACE_NAME_HERE with the codespace name retrieved using get_codespace_name.sh!!
-    // if you're running these locally, replace cs_backend in fetch() with:
-    // 'http://localhost:5050/profile'
+
     const CODESPACE_NAME_HERE = `probable-space-chainsaw-69p47w465w6r35rxq`;
-    const cs_backend = `https://${CODESPACE_NAME_HERE}-5050.app.github.dev/profile`
+    const cs_backend = `https://${CODESPACE_NAME_HERE}-5050.app.github.dev/profile`;
 
     try {
       const response = await fetch(cs_backend, {
@@ -103,44 +116,76 @@ function NHANESUI() {
     }
   };
 
-  const createGraph = (data) => {
-    const diseaseCol = Object.keys(data[0]).find(col => col.startsWith('DIQ010'));
-    if (!diseaseCol) {
-      alert('No disease diagnosis column found.');
-      return;
+const createGraph = (data) => {
+  if (!data || data.length === 0) {
+    alert("No data returned from backend.");
+    setGraphData(null);
+    return;
+  }
+
+  // Try to automatically detect a disease column
+  const diseaseCol = Object.keys(data[0]).find(
+    (col) =>
+      col.toUpperCase().includes("DIQ") ||
+      col.toUpperCase().includes("MCQ") ||
+      col.toUpperCase().includes("DISEASE")
+  );
+
+  if (!diseaseCol) {
+    alert("No disease diagnosis column found in returned data.");
+    console.log("Available columns:", Object.keys(data[0]));
+    return;
+  }
+
+  // Accept multiple possible positive encodings
+  const positiveCases = data.filter((row) => {
+    const val = row[diseaseCol];
+
+    if (val === null || val === undefined) return false;
+
+    const normalized = String(val).toLowerCase().trim();
+
+    return normalized === "1" ||
+           normalized === "yes" ||
+           normalized === "true";
+   });
+
+  if (positiveCases.length === 0) {
+    alert("No positive cases found after filtering.");
+    setGraphData(null);
+    return;
+  }
+
+  const ageCounts = {};
+
+  positiveCases.forEach((row) => {
+    const age = Number(row.RIDAGEYR);
+    if (!isNaN(age)) {
+      ageCounts[age] = (ageCounts[age] || 0) + 1;
     }
+  });
 
-    const positiveCases = data.filter(row => row[diseaseCol] === 1);
+  const ages = Object.keys(ageCounts)
+    .map(Number)
+    .sort((a, b) => a - b);
 
-    const ageCounts = {};
-    positiveCases.forEach(row => {
-      const age = row.RIDAGEYR;
-      if (age != null) {
-        ageCounts[age] = (ageCounts[age] || 0) + 1;
-      }
-    });
+  const counts = ages.map((age) => ageCounts[age]);
 
-    const ages = Object.keys(ageCounts).map(Number).sort((a, b) => a - b);
-    const counts = ages.map(age => ageCounts[age]);
-
-    const trace = {
-      x: ages,
-      y: counts,
-      type: 'scatter',
-      mode: 'lines+markers',
-      line: { shape: 'spline' },
-      marker: { color: 'teal' },
-    };
-
-    const layout = {
-      title: 'Distribution of Positive Disease Diagnoses by Age',
-      xaxis: { title: 'Age' },
-      yaxis: { title: 'Number of Cases' },
-      margin: { t: 50, b: 50, l: 50, r: 50 }
-    };
-
-    setGraphData({ data: [trace], layout: layout });
+  const trace = {
+    x: ages,
+    y: counts,
+    type: "scatter",
+    mode: "lines+markers",
   };
+
+  const layout = {
+    title: "Distribution of Positive Disease Diagnoses by Age",
+    xaxis: { title: "Age" },
+    yaxis: { title: "Number of Cases" },
+  };
+
+  setGraphData({ data: [trace], layout });
+};
 
   return (
     <div className="nhanes-ui" style={{ padding: '30px', maxWidth: '800px', margin: '0 auto' }}>
@@ -213,8 +258,26 @@ function NHANESUI() {
             <option value="Waist Circumference">Waist Circumference</option>
           </select>
         </div>
-        
 
+        {/* Updated Major Category Attributes */}
+        <div style={{ marginBottom: '15px' }}>
+          <label>Major Category Attributes</label>
+          <Select
+            options={[selectAllOption, ...majorCategoryOptions]}
+            isMulti
+            closeMenuOnSelect={false}
+            value={majorCategoryAttributes}
+            onChange={(selected) => {
+              if (selected?.some(option => option.value === "*")) {
+                setMajorCategoryAttributes([...majorCategoryOptions]);
+              } else {
+                setMajorCategoryAttributes(selected || []);
+              }
+            }}
+            placeholder="Select Major Category Attributes"
+            styles={{ container: (provided) => ({ ...provided, marginTop: '5px' }) }}
+          />
+        </div>
 
         <div style={{ marginBottom: '15px' }}>
           <label>NHANES Cycles</label>
@@ -237,6 +300,11 @@ function NHANESUI() {
             <option value="Diabetes">Diabetes</option>
             <option value="Hypertension">Hypertension</option>
             <option value="Cardiovascular">Cardiovascular</option>
+            <option value="Sleep Disorders">Sleep Disorders</option>
+            <option value="Osteoporosis">Osteoporosis</option>
+            <option value="Blood Pressure">Blood Pressure</option>
+            <option value="Gout">Gout</option>
+            
           </select>
         </div>
 
