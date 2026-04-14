@@ -4,7 +4,7 @@ from patient_profile_builder import PatientProfileBuilder, download_nhanes_file
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 #Instantiate the PatientProfileBuilder with the callable download function.
 profile_builder = PatientProfileBuilder(download_nhanes_file)
