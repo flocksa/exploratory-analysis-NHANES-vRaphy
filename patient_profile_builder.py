@@ -425,7 +425,7 @@ class PatientProfileBuilder:
             "LBDFOT": "Folate",
             "SSFOLTOT": "Folate",
 
-            "LBXIRN": "Iron",
+            "LBXSIR": "Iron",
             "LBXFER": "Ferritin",
 
             "LBXBPB": "Lead",
