@@ -3,6 +3,152 @@ import requests
 import pandas as pd
 
 
+# ================= LAB MAPPING =================
+LAB_MAPPING = {
+    "1999-2000": {
+        "LAB10AM": ["LBXGLU","LBXIN"],
+        "LAB25": ["LBXHGB","LBXHCT","LBXWBCSI","LBXRBCSI","LBXPLTSI"],
+        "LAB13": ["LBXTC"],
+        "LAB13AM": ["LBDLDL","LBXTR"],
+        "LAB18": ["LBXSATSI","LBXSASSI","LBXSGTSI","LB2SBU","LBXSCR","LBXSUA","LBXSIR"],
+        "LAB06": ["LBXFOL","LBXFER","LBXBPB","LBXBCD","LBXTHG","LBXSEL"],
+        "LAB16": ["URXUMA"],
+        "LAB26PP": ["URXUCR"],
+        "VID_2_00": ["LB2VID"]
+    },
+
+    "2001-2002": {
+        "L10AM_B": ["LBXGLU","LBXIN"],
+        "L25_B": ["LBXHGB","LBXHCT","LBXWBCSI","LBXRBCSI","LBXPLTSI"],
+        "L13_AM_B": ["LBXTC","LBDLDL","LBXTR"],
+        "L40_B": ["LBXSATSI","LBXSASSI","LBXSGTSI","LB2SBU","LBXSCR","LBXSUA","LBXSIR"],
+        "L06_B": ["LBXFOL","LBXFER","LBXBPB","LBXBCD","LBXTHG"],
+        "L16_B": ["URXUMA","URXUCR"],
+        "L06VID_B": ["LBXVID"]
+    },
+
+    "2003-2004": {
+        "L10AM_C": ["LBXGLU","LBXIN"],
+        "L25_C": ["LBXHGB","LBXHCT","LBXWBCSI","LBXRBCSI","LBXPLTSI"],
+        "L13_C": ["LBXTC"],
+        "L13_AM_C": ["LBDLDL","LBXTR"],
+        "L40_C": ["LBXSATSI","LBXSASSI","LBXSGTSI","LB2SBU","LBXSCR","LBXSUA","LBXSIR"],
+        "L06NB_C": ["LBXFOL"],
+        "L06TFR_C": ["LBXFER"],
+        "L06BMT_C": ["LBXBPB","LBXBCD","LBXTHG"],
+        "L39EPP_C": ["LBXSEL"],
+        "L16_C": ["URXUMA"],
+        "L26UPP_C": ["URXUCR"],
+        "L06VID_C": ["LBDVID"]
+    },
+
+    "2005-2006": {
+        "GLU_D": ["LBXGLU","LBXIN"],
+        "CBC_D": ["LBXHGB","LBXHCT","LBXWBCSI","LBXRBCSI","LBXPLTSI"],
+        "TCHOL_D": ["LBXTC"],
+        "TRIGLY_D": ["LBDLDL","LBXTR"],
+        "BIOPRO_D": ["LBXSATSI","LBXSASSI","LBXSGTSI","LB2SBU","LBXSCR","LBXSUA","LBXSIR"],
+        "FOLATE_D": ["LBXFOL"],
+        "FERTIN_D": ["LBXFER"],
+        "PBCD_D": ["LBXBPB","LBXBCD","LBXTHG"],
+        "VID_D": ["LBDVIDMS"],
+        "ALB_CR_D": ["URXUMA","URXUCR"]
+    },
+
+    "2007-2008": {
+        "GLU_E": ["LBXGLU","LBXIN"],
+        "CBC_E": ["LBXHGB","LBXHCT","LBXWBCSI","LBXRBCSI","LBXPLTSI"],
+        "TCHOL_E": ["LBXTC"],
+        "TRIGLY_E": ["LBDLDL","LBXTR"],
+        "BIOPRO_E": ["LBXSATSI","LBXSASSI","LBXSGTSI","LB2SBU","LBXSCR","LBXSUA","LBXSIR"],
+        "FOLATE_E": ["LBDFOL"],
+        "FERTIN_E": ["LBXFER"],
+        "PBCD_E": ["LBXBPB","LBXBCD","LBXTHG"],
+        "VID_E": ["LBXVIDMS"],
+        "ALB_CR_E": ["URXUMA","URXUCR"]
+    },
+
+    "2009-2010": {
+        "GLU_F": ["LBXIN"],
+        "CBC_F": ["LBXHGB","LBXHCT","LBXWBCSI","LBXRBCSI","LBXPLTSI"],
+        "TCHOL_F": ["LBXTC"],
+        "TRIGLY_F": ["LBDLDL","LBXTR"],
+        "BIOPRO_F": ["LBXSATSI","LBXSASSI","LBXSGTSI","LB2SBU","LBXSCR","LBXSUA","LBXSIR"],
+        "FOLATE_F": ["LBDFOL"],
+        "FERTIN_F": ["LBXFER"],
+        "PBCD_F": ["LBXBPB","LBXBCD","LBXTHG"],
+        "VID_F": ["LBXVIDMS"],
+        "ALB_CR_F": ["URXUMA","URXUCR"]
+    },
+
+    "2011-2012": {
+        "GLU_G": ["LBXGLU","LBXIN"],
+        "CBC_G": ["LBXHGB","LBXHCT","LBXWBCSI","LBXRBCSI","LBXPLTSI"],
+        "TCHOL_G": ["LBXTC"],
+        "TRIGLY_G": ["LBDLDL","LBXTR"],
+        "BIOPRO_G": ["LBXSATSI","LBXSASSI","LBXSGTSI","LB2SBU","LBXSCR","LBXSUA","LBXSIR"],
+        "FOLFMS_G": ["LBDFOT"],
+        "PBCD_G": ["LBXBPB","LBXBCD","LBXTHG","LBXBMN","LBXBSE"],
+        "VID_G": ["LBXVIDMS"],
+        "ALB_CR_G": ["URXUMA","URXUCR"]
+    },
+
+    "2013-2014": {
+        "GLU_H": ["LBXGLU"],
+        "INS_H": ["LBXIN"],
+        "CBC_H": ["LBXHGB","LBXHCT","LBXWBCSI","LBXRBCSI","LBXPLTSI"],
+        "TCHOL_H": ["LBXTC"],
+        "TRIGLY_H": ["LBDLDL","LBXTR"],
+        "BIOPRO_H": ["LBXSATSI","LBXSASSI","LBXSGTSI","LB2SBU","LBXSCR","LBXSUA","LBXSIR"],
+        "FOLFMS_H": ["LBDFOT"],
+        "PBCD_H": ["LBXBPB","LBXBCD","LBXTHG","LBXBMN","LBXBSE"],
+        "VID_H": ["LBXVIDMS"],
+        "ALB_CR_H": ["URXUMA","URXUCR"]
+    },
+
+    "2015-2016": {
+        "GLU_I": ["LBXGLU"],
+        "INS_I": ["LBXIN"],
+        "CBC_I": ["LBXHGB","LBXHCT","LBXWBCSI","LBXRBCSI","LBXPLTSI"],
+        "TCHOL_I": ["LBXTC"],
+        "TRIGLY_I": ["LBDLDL","LBXTR"],
+        "BIOPRO_I": ["LBXSATSI","LBXSASSI","LBXSGTSI","LB2SBU","LBXSCR","LBXSUA","LBXSIR"],
+        "FOLFMS_I": ["LBDFOT"],
+        "FERTIN_I": ["LBXFER"],
+        "PBCD_I": ["LBXBPB","LBXBCD","LBXTHG","LBXBMN","LBXBSE"],
+        "VID_I": ["LBXVIDMS"],
+        "ALB_CR_I": ["URXUMA","URXUCR"]
+    },
+
+    "2017-2020": {
+        "P_GLU": ["LBXGLU"],
+        "P_INS": ["LBXIN"],
+        "P_CBC": ["LBXHGB","LBXHCT","LBXWBCSI","LBXRBCSI","LBXPLTSI"],
+        "P_TCHOL": ["LBXTC"],
+        "P_TRIGLY": ["LBDLDL","LBXTR"],
+        "P_BIOPRO": ["LBXSATSI","LBXSASSI","LBXSGTSI","LB2SBU","LBXSCR","LBXSUA","LBXSIR"],
+        "P_FOLFMS": ["LBDFOT"],
+        "P_FERTIN": ["LBXFER"],
+        "P_PBCD": ["LBXBPB","LBXBCD","LBXTHG","LBXBMN","LBXBSE"],
+        "P_ALB_CR": ["URXUMA","URXUCR"]
+    },
+
+    "2021-2023": {
+        "GLU_L": ["LBXGLU"],
+        "INS_L": ["LBXIN"],
+        "CBC_L": ["LBXHGB","LBXHCT","LBXWBCSI","LBXRBCSI","LBXPLTSI"],
+        "TCHOL_L": ["LBXTC"],
+        "TRIGLY_L": ["LBDLDL"],
+        "BIOPRO_L": ["LBXTR","LBXSATSI","LBXSASSI","LBXSGTSI","LB2SBU","LBXSCR","LBXSUA","LBXSIR"],
+        "FOLFMS_L": ["LBDFOT"],
+        "FERTIN_L": ["LBXFER"],
+        "PBCD_L": ["LBXBPB","LBXBCD","LBXTHG","LBXBMN","LBXBSE"],
+        "VID_L": ["LBXVIDMS"],
+        "ALB_CR_L": ["URXUMA","URXUCR"]
+    }
+}
+
+
 def download_nhanes_file(cycle, file_desc, category, download_dir="nhanes_data"):
     category = category.lower()
 
@@ -16,6 +162,41 @@ def download_nhanes_file(cycle, file_desc, category, download_dir="nhanes_data")
     if not year:
         return None
 
+    # ================= LABORATORY =================
+    if category == "laboratory":
+        if cycle not in LAB_MAPPING:
+            return None
+
+        dfs = []
+        for file_name, variables in LAB_MAPPING[cycle].items():
+            url = f"https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/{year}/DataFiles/{file_name}.XPT"
+            path = os.path.join(download_dir, f"{file_name}.XPT")
+
+            os.makedirs(download_dir, exist_ok=True)
+
+            if not os.path.exists(path):
+                r = requests.get(url)
+                if r.status_code != 200:
+                    continue
+                open(path, "wb").write(r.content)
+
+            df = pd.read_sas(path, format='xport')
+            keep = ["SEQN"] + [v for v in variables if v in df.columns]
+            df = df[keep]
+
+            dfs.append(df)
+            os.remove(path)
+
+        if not dfs:
+            return None
+
+        final_lab = dfs[0]
+        for d in dfs[1:]:
+            final_lab = pd.merge(final_lab, d, on="SEQN", how="outer")
+
+        return final_lab
+
+    # ================= ORIGINAL DATASETS =================
     nhanes_file_mapping = {
         "demographics": {
             "Demographic Variables & Sample Weights": {
@@ -57,8 +238,9 @@ def download_nhanes_file(cycle, file_desc, category, download_dir="nhanes_data")
         return None
 
     url = f"https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/{year}/DataFiles/{file_name}.XPT"
-    os.makedirs(download_dir, exist_ok=True)
     path = os.path.join(download_dir, f"{file_name}.XPT")
+
+    os.makedirs(download_dir, exist_ok=True)
 
     if not os.path.exists(path):
         r = requests.get(url)
@@ -68,7 +250,7 @@ def download_nhanes_file(cycle, file_desc, category, download_dir="nhanes_data")
 
     df = pd.read_sas(path, format='xport')
 
-    # ================= DEMO =================
+  # ================= DEMO =================
     if category == "demographics":
         vars = ["SEQN","RIDAGEYR","RIDAGEMN","RIAGENDR","RIDRETH1",
                 "DMDMARTL","RIDEXPRG","INDFMPIR","DMDHHSIZ","DMQMILIT"]
@@ -103,7 +285,7 @@ def download_nhanes_file(cycle, file_desc, category, download_dir="nhanes_data")
             vars += ["BPQ050A","BPQ100D"]
         df = df[[v for v in vars if v in df.columns]]
 
-       # ================= DIQ =================
+    # ================= DIQ =================
     if category == "questionnaire" and file_desc == "Diabetes":
         vars = ["SEQN","DIQ010","DIQ050"]
 
@@ -137,8 +319,6 @@ def download_nhanes_file(cycle, file_desc, category, download_dir="nhanes_data")
 
     os.remove(path)
     return df
-
-
 # ================= BUILDER =================
 class PatientProfileBuilder:
     def __init__(self, download_function):
@@ -164,6 +344,7 @@ class PatientProfileBuilder:
         for df in all_dfs[1:]:
             final = pd.merge(final, df, on="SEQN", how="outer")
 
+        # ================= RENAME =================
         final.rename(columns={
             "SEQN": "ID",
             "RIDAGEYR": "Age",
@@ -212,7 +393,49 @@ class PatientProfileBuilder:
             "DRXTSFAT": "Sat_Fat","DR1TSFAT": "Sat_Fat",
             "DRXTMFAT": "Mono_Fat","DR1TMFAT": "Mono_Fat",
             "DRXTPFAT": "Poly_Fat","DR1TPFAT": "Poly_Fat",
-            "DRXTCHOL": "Cholesterol","DR1TCHOL": "Cholesterol"
+            "DRXTCHOL": "Cholesterol","DR1TCHOL": "Cholesterol",
+
+            # ================= LAB VARIABLES =================
+            "LBXGLU": "Glucose",
+            "LBXIN": "Insulin_Lab",
+
+            "LBXHGB": "Hemoglobin",
+            "LBXHCT": "Hematocrit",
+            "LBXWBCSI": "WBC",
+            "LBXRBCSI": "RBC",
+            "LBXPLTSI": "Platelets",
+
+            "LBXTC": "Total_Cholesterol",
+            "LBDLDL": "LDL",
+            "LBXTR": "Triglycerides",
+
+            "LBXSATSI": "ALT",
+            "LBXSASSI": "AST",
+            "LBXSGTSI": "GGT",
+            "LB2SBU": "BUN",
+            "LBXSCR": "Creatinine",
+            "LBXSUA": "Uric_Acid",
+
+            "LBXVIDMS": "Vitamin_D",
+            "LBDVID": "Vitamin_D",
+            "LB2VID": "Vitamin_D",
+
+            "LBXFOL": "Folate",
+            "LBDFOL": "Folate",
+            "LBDFOT": "Folate",
+            "SSFOLTOT": "Folate",
+
+            "LBXIRN": "Iron",
+            "LBXFER": "Ferritin",
+
+            "LBXBPB": "Lead",
+            "LBXBCD": "Cadmium",
+            "LBXTHG": "Mercury",
+            "LBXSEL": "Selenium",
+
+            "URXUMA": "Urine_Albumin",
+            "URXUCR": "Urine_Creatinine"
+
         }, inplace=True)
 
         os.makedirs("nhanes_data", exist_ok=True)
